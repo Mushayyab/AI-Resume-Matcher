@@ -1,3 +1,4 @@
+# External libraries for UI, PDF processing, and NLP math
 from pypdf import PdfReader # type: ignore
 import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
@@ -5,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 st.set_page_config(page_title="Resume Matcher", page_icon="📄", layout="wide")
 
+# Function to loop through PDF pages and combine text into one string
 def extract_text_from_pdf(file):
     pdf = PdfReader(file)
     text = ""
@@ -12,6 +14,7 @@ def extract_text_from_pdf(file):
         text += page.extract_text()
     return text
 
+# Uses Vectorization and Cosine Similarity to compare two strings of text
 def calculate_similarity(resume_text, job_desc):
     content = [resume_text, job_desc]
     cv = CountVectorizer()
@@ -19,6 +22,7 @@ def calculate_similarity(resume_text, job_desc):
     similarity = cosine_similarity(count_matrix)
     return similarity[0][1] * 100
 
+# Configure the browser tab and layout
 with st.sidebar:
     st.title("Settings & Info")
     st.write("This tool uses **Natural Language Processing (NLP)** to compare your resume against job requirements.")
@@ -29,6 +33,7 @@ st.title("🎯 AI Resume Matcher")
 uploaded_file = st.file_uploader("Upload your Resume", type="pdf")
 job_description = st.text_area("Paste your Job Description here")
 
+# Main logic trigger: runs when the user clicks 'Compare Now'
 if st.button("Compare Now"):
     if uploaded_file is not None and job_description:
         resume_text = extract_text_from_pdf(uploaded_file)
